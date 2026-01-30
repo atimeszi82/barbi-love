@@ -1,13 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="hu">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Barbi ❤️</title>
+
   <link rel="manifest" href="manifest.webmanifest">
- <meta name="theme-color" content="#000000">
- <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="theme-color" content="#000000">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
 
   <style>
     :root{
@@ -38,7 +38,6 @@
       overflow-x:hidden;
     }
 
-    /* subtle noise */
     body:before{
       content:"";
       position:fixed; inset:0;
@@ -257,6 +256,50 @@
       font-size: 12px;
     }
     a{color: var(--gold); text-decoration:none}
+
+    /* === AUTOPLAY OVERLAY === */
+    .start-overlay{
+      position: fixed;
+      inset: 0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 22px;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(14px);
+      z-index: 9999;
+    }
+    .start-card{
+      max-width: 520px;
+      width: 100%;
+      border-radius: 22px;
+      padding: 18px 18px 16px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 20px 70px rgba(0,0,0,.55);
+      text-align:center;
+      color: rgba(255,255,255,.92);
+    }
+    .start-card h3{ margin: 6px 0 8px; font-size: 18px; }
+    .start-card p{ margin: 0 0 14px; opacity: .75; line-height: 1.4; }
+    .start-btn{
+      width:100%;
+      border:0;
+      border-radius: 14px;
+      padding: 14px 14px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor:pointer;
+      color: rgba(0,0,0,.88);
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+    }
+    .start-skip{
+      margin-top: 10px;
+      font-size: 12px;
+      opacity: .65;
+      cursor:pointer;
+      user-select:none;
+    }
   </style>
 </head>
 
@@ -308,12 +351,12 @@
           <h2>🎵 Zene</h2>
           <div class="badge" id="musicState">OFF</div>
         </div>
-        <p class="text">Nem indul automatikusan (Android/Chrome szabály), de gombbal igen.</p>
+        <p class="text">Androidon teljes autoplay nem garantált, ezért első alkalommal egy koppintás kell.</p>
         <div class="btnrow">
-          <button class="btn" onclick="toggleMusic()" id="musicBtn">▶ Lejátszás</button>
+          <button class="btn" onclick="toggleMusic(true)" id="musicBtn">▶ Lejátszás</button>
           <button class="btn secondary" onclick="setVolume(.25)">Halk</button>
         </div>
-        <div class="output" id="musicOut">Adjunk hozzá egy MP3-at: <b>music.mp3</b></div>
+        <div class="output" id="musicOut">Zene: <b>music.mp3</b></div>
         <audio id="player" preload="none"></audio>
       </div>
 
@@ -342,6 +385,17 @@
     </div>
   </div>
 
+  <!-- START OVERLAY (csak ha kell) -->
+  <div class="start-overlay" id="startOverlay" style="display:none;">
+    <div class="start-card">
+      <div style="font-size:26px;">❤️</div>
+      <h3>Indítsd el a zenét</h3>
+      <p>Egy koppintás kell (a telefon így engedi), és indul a háttérzene.</p>
+      <button class="start-btn" id="startBtn">▶ Start</button>
+      <div class="start-skip" id="startSkip">Most ne (csendben marad)</div>
+    </div>
+  </div>
+
 <script>
   // === DÁTUM + CHIP ===
   const chip = document.getElementById('todayChip');
@@ -350,8 +404,6 @@
   chip.textContent = hu.format(now);
 
   // === NAPI ÜZENETEK (IDE MAJD TE ÍROD BE) ===
-  // 15 nap: Feb 14–28 (index 0..14)
-  // Ha még nincs kész, maradhat placeholder.
   const startDate = new Date("2026-02-14T00:00:00");
   const dailyMessages = [
     "Ide jön majd a 02.14-es üzenet (te írod).",
@@ -375,22 +427,14 @@
     const today = new Date();
     const t0 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const s0 = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-    const diff = Math.floor((t0 - s0) / (1000*60*60*24));
-    return diff;
+    return Math.floor((t0 - s0) / (1000*60*60*24));
   }
 
   function showDaily(){
     const idx = dayIndex();
     const out = document.getElementById('dailyOut');
-
-    if (idx < 0){
-      out.textContent = "Még nincs Valentin-nap 🙂";
-      return;
-    }
-    if (idx >= dailyMessages.length){
-      out.textContent = "A 15 napos sorozat véget ért. ❤️";
-      return;
-    }
+    if (idx < 0){ out.textContent = "Még nincs Valentin-nap 🙂"; return; }
+    if (idx >= dailyMessages.length){ out.textContent = "A 15 napos sorozat véget ért. ❤️"; return; }
     out.textContent = dailyMessages[idx];
   }
 
@@ -404,54 +448,105 @@
 
   function showReason(){
     const out = document.getElementById('reasonOut');
-    const r = reasons[Math.floor(Math.random()*reasons.length)];
-    out.textContent = r;
+    out.textContent = reasons[Math.floor(Math.random()*reasons.length)];
   }
 
-  // === ZENE (music.mp3 a repo rootba vagy /assets/music.mp3) ===
+  // === ZENE ===
   const player = document.getElementById('player');
   const musicBtn = document.getElementById('musicBtn');
   const musicState = document.getElementById('musicState');
   const musicOut = document.getElementById('musicOut');
+  const statusEl = document.getElementById('status');
+
+  const overlay = document.getElementById('startOverlay');
+  const startBtn = document.getElementById('startBtn');
+  const startSkip = document.getElementById('startSkip');
 
   let musicLoaded = false;
   let playing = false;
 
+  // Autoplay emlékezés
+  const AUTO_KEY = "barbi_autoplay_ok_v1";
+
   function ensureMusic(){
     if (!musicLoaded){
-      player.src = "music.mp3"; // tedd a repo rootba: music.mp3
+      player.src = "music.mp3";
       player.loop = true;
       player.volume = 0.10;
       musicLoaded = true;
-      musicOut.innerHTML = 'Zene betöltve: <b>music.mp3</b>';
-    }
-  }
-
-  async function toggleMusic(){
-    ensureMusic();
-    try{
-      if (!playing){
-        await player.play();
-        playing = true;
-        musicBtn.textContent = "⏸ Szünet";
-        musicState.textContent = "ON";
-      }else{
-        player.pause();
-        playing = false;
-        musicBtn.textContent = "▶ Lejátszás";
-        musicState.textContent = "OFF";
-      }
-    }catch(e){
-      // ha nincs még feltöltött music.mp3
-      musicOut.textContent = "Nem találok music.mp3-at. Tölts fel egy MP3-at a repo gyökerébe (music.mp3).";
+      musicOut.innerHTML = 'Zene: <b>music.mp3</b>';
     }
   }
 
   function setVolume(v){
     ensureMusic();
     player.volume = Math.max(0, Math.min(1, v));
-    document.getElementById('status').textContent = "Hangerő: " + Math.round(player.volume*100) + "%";
+    statusEl.textContent = "Hangerő: " + Math.round(player.volume*100) + "%";
   }
+
+  function setUI(on){
+    playing = on;
+    musicBtn.textContent = on ? "⏸ Szünet" : "▶ Lejátszás";
+    musicState.textContent = on ? "ON" : "OFF";
+  }
+
+  function showOverlay(){
+    overlay.style.display = "flex";
+  }
+  function hideOverlay(){
+    overlay.style.display = "none";
+  }
+
+  async function tryPlay(){
+    ensureMusic();
+    await player.play(); // dobhat hibát, ha blokkolja
+    setUI(true);
+  }
+
+  async function toggleMusic(markAutoplay){
+    ensureMusic();
+    try{
+      if (!playing){
+        await player.play();
+        setUI(true);
+        if (markAutoplay) localStorage.setItem(AUTO_KEY, "1");
+      }else{
+        player.pause();
+        setUI(false);
+      }
+    }catch(e){
+      musicOut.textContent = "A böngésző blokkolta az automatikus lejátszást. Koppints a Start gombra.";
+      showOverlay();
+    }
+  }
+
+  // Overlay gombok
+  startBtn.addEventListener('click', async () => {
+    try{
+      await tryPlay();
+      localStorage.setItem(AUTO_KEY, "1");
+    }catch(e){
+      // ha mégsem megy, nincs gond, bezárjuk
+    }
+    hideOverlay();
+  });
+
+  startSkip.addEventListener('click', () => hideOverlay());
+
+  // OKOS AUTOPLAY: csak ha korábban engedte a user
+  window.addEventListener('load', async () => {
+    if (localStorage.getItem(AUTO_KEY) === "1") {
+      try{
+        await tryPlay();
+      }catch(e){
+        // ha mégis blokkolja, felajánljuk a Start-ot
+        showOverlay();
+      }
+    } else {
+      // első alkalom: ha szeretnéd, itt is feljöhet az overlay
+      // de most csak akkor jön fel, ha a user megnyomja a play-t és blokkolja
+    }
+  });
 
   // === MÁSOLÁS ===
   async function copyText(id){
@@ -460,15 +555,12 @@
     if (!txt) return;
     try{
       await navigator.clipboard.writeText(txt);
-      document.getElementById('status').textContent = "Másolva ✅";
-      setTimeout(()=> document.getElementById('status').textContent="Kész.", 900);
+      statusEl.textContent = "Másolva ✅";
+      setTimeout(()=> statusEl.textContent="Kész.", 900);
     }catch(e){
-      document.getElementById('status').textContent = "Másolás nem engedélyezett itt.";
+      statusEl.textContent = "Másolás nem engedélyezett itt.";
     }
   }
-
-  // === GALÉRIA (később automatikus lista is lehet) ===
-  // Most placeholder kockák vannak, mert a képeket még nem töltötted fel.
 </script>
 </body>
 </html>
