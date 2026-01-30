@@ -1,1 +1,117 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Barbi ❤️</title>
+  <meta name="theme-color" content="#000000">
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: #000;
+      color: #fff;
+      text-align: center;
+    }
+    .box {
+      max-width: 600px;
+      margin: auto;
+      padding: 24px;
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 18px;
+      line-height: 1.5;
+      opacity: 0.95;
+    }
+    .card {
+      background: #111;
+      border-radius: 18px;
+      padding: 20px;
+      margin: 18px 0;
+    }
+    button {
+      background: #ffd36b;
+      color: #000;
+      border: none;
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .small {
+      font-size: 13px;
+      opacity: 0.7;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+
+    <div class="card">
+      <h1>Barbi ❤️</h1>
+      <p>
+        Ezt az oldalt csak neked csináltam.<br>
+        Nem nagy dolog.<br>
+        De szívből van.
+      </p>
+      <p><strong>Boldog Valentin-napot 💕</strong></p>
+    </div>
+
+    <div class="card">
+      <h2>📅 Mai üzenetem neked</h2>
+      <p id="daily">Nyomd meg a gombot 🙂</p>
+      <button onclick="dailyMessage()">Mai üzenet</button>
+      <div class="small">Naponta egy új gondolat tőlem.</div>
+    </div>
+
+    <div class="card">
+      <h2>💖 Miért szeretlek</h2>
+      <p id="reason">Nyomd meg, kapsz egy okot.</p>
+      <button onclick="randomReason()">Adj egy okot</button>
+    </div>
+
+  </div>
+
+<script>
+const startDate = new Date("2026-02-14");
+const messages = [
+  "Boldog Valentin-napot Barbi ❤️",
+  "Ma azt szeretem benned, hogy melletted nyugodtabb vagyok.",
+  "A mosolyod jobb napokat csinál.",
+  "Veled egyszerűbb minden.",
+  "Köszönöm, hogy vagy nekem.",
+  "Ez az app kicsi. Az érzésem nem."
+];
+
+const reasons = [
+  "Mert számítasz.",
+  "Mert jó veled csendben is.",
+  "Mert amikor mosolyogsz, jobb lesz minden.",
+  "Mert inspirálsz.",
+  "Mert te Barbi vagy."
+];
+
+function dailyMessage() {
+  const today = new Date();
+  const diff = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+  const index = diff < 0 ? 0 : diff % messages.length;
+  document.getElementById("daily").innerText = messages[index];
+}
+
+function randomReason() {
+  const r = reasons[Math.floor(Math.random() * reasons.length)];
+  document.getElementById("reason").innerText = r;
+}
+</script>
+
+</body>
+</html>
 
