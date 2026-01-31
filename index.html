@@ -249,7 +249,6 @@
       padding: 8px;
     }
 
-    /* ha valódi fotó van, akkor ne takarja a :before overlay */
     .ph.is-photo:before{ display:none; }
     .ph img{
       width:100%;
@@ -338,6 +337,39 @@
       color:#fff;
       opacity:.8;
       cursor:pointer;
+    }
+
+    /* === FULLSCREEN NAV (SWIPE + ARROWS) === */
+    .pv-nav{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10001;
+    }
+    .pv-btn{
+      pointer-events: auto;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.35);
+      color: rgba(255,255,255,.92);
+      font-size: 22px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .pv-btn:hover{ background: rgba(0,0,0,.5); }
+    .pv-btn.left{ left: 14px; }
+    .pv-btn.right{ right: 14px; }
+    @media (max-width: 520px){
+      .pv-btn{ width: 42px; height: 42px; }
     }
   </style>
 </head>
@@ -435,9 +467,13 @@
     </div>
   </div>
 
-  <!-- FULLSCREEN PHOTO VIEWER -->
+  <!-- FULLSCREEN PHOTO VIEWER (SWIPE + ARROWS) -->
   <div class="photo-viewer" id="photoViewer" onclick="closePhoto()">
     <img id="photoViewerImg" src="" alt="">
+    <div class="pv-nav">
+      <div class="pv-btn left" onclick="event.stopPropagation(); prevPhoto()">‹</div>
+      <div class="pv-btn right" onclick="event.stopPropagation(); nextPhoto()">›</div>
+    </div>
   </div>
 
 <script>
@@ -472,7 +508,7 @@
 
   // === OKOK (IDE IS TE ÍRSZ) ===
   const reasons = [
-    "Azért mert mindig tudod hol van amit keresek",
+    "Ide jönnek az okok (te írod).",
     "Ok #2 …","Ok #3 …","Ok #4 …"
   ];
 
@@ -494,7 +530,6 @@
 
   let musicLoaded = false;
   let playing = false;
-
   const AUTO_KEY = "barbi_autoplay_ok_v1";
 
   function ensureMusic(){
@@ -576,7 +611,7 @@
     }
   }
 
-  // ✅ === GALÉRIA – ITT ADOD MEG A FOTÓKAT ===
+  // ✅ === GALÉRIA – FOTÓLISTA ===
   const photos = [
     "photos/1.jpg","photos/2.jpg","photos/3.jpg","photos/4.jpg",
     "photos/5.jpg","photos/6.jpg","photos/7.jpg","photos/8.jpg",
@@ -598,7 +633,6 @@
       img.alt = "";
       img.loading = "lazy";
 
-      // ha nem létezik a fájl, ne legyen "törött" ikon
       img.onerror = () => tile.remove();
 
       img.addEventListener("click", (e) => {
@@ -611,23 +645,72 @@
     });
   }
 
-  function openPhoto(src){
+  // === FULLSCREEN (SWIPE + ARROWS) ===
+  let currentIndex = 0;
+
+  function indexOfPhoto(src){
+    const i = photos.indexOf(src);
+    return i >= 0 ? i : 0;
+  }
+
+  function showPhotoByIndex(i){
+    if(!photos || photos.length === 0) return;
+    currentIndex = (i + photos.length) % photos.length;
+
     const v = document.getElementById("photoViewer");
-    const i = document.getElementById("photoViewerImg");
-    i.src = src;
+    const img = document.getElementById("photoViewerImg");
+    img.src = photos[currentIndex];
     v.style.display = "flex";
+  }
+
+  function openPhoto(src){
+    currentIndex = indexOfPhoto(src);
+    showPhotoByIndex(currentIndex);
   }
 
   function closePhoto(){
     document.getElementById("photoViewer").style.display = "none";
   }
 
+  function nextPhoto(){ showPhotoByIndex(currentIndex + 1); }
+  function prevPhoto(){ showPhotoByIndex(currentIndex - 1); }
+
   // ne záródjon be, ha magára a képre kattintasz
   document.getElementById("photoViewerImg").addEventListener("click", (e)=>e.stopPropagation());
 
-  // ESC bezárás (PC)
+  // SWIPE
+  const viewer = document.getElementById("photoViewer");
+  let sx = 0, sy = 0, st = 0;
+
+  viewer.addEventListener("touchstart", (e) => {
+    if (viewer.style.display !== "flex") return;
+    const t = e.changedTouches[0];
+    sx = t.clientX; sy = t.clientY;
+    st = Date.now();
+  }, {passive:true});
+
+  viewer.addEventListener("touchend", (e) => {
+    if (viewer.style.display !== "flex") return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - sx;
+    const dy = t.clientY - sy;
+    const dt = Date.now() - st;
+
+    if (dt > 650) return;
+    if (Math.abs(dx) < 40) return;
+    if (Math.abs(dy) > 60) return;
+
+    if (dx < 0) nextPhoto();
+    else prevPhoto();
+  }, {passive:true});
+
+  // Billentyűk (PC)
   window.addEventListener("keydown", (e)=>{
+    const open = (viewer.style.display === "flex");
     if(e.key === "Escape") closePhoto();
+    if(!open) return;
+    if(e.key === "ArrowRight") nextPhoto();
+    if(e.key === "ArrowLeft") prevPhoto();
   });
 
   renderGallery();
