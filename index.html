@@ -638,6 +638,16 @@
     g.appendChild(tile);
   });
 }
+function openPhoto(src){
+  const v = document.getElementById("photoViewer");
+  const i = document.getElementById("photoViewerImg");
+  i.src = src;
+  v.style.display = "flex";
+}
+
+function closePhoto(){
+  document.getElementById("photoViewer").style.display = "none";
+}
 
 
     // ha nincs megadott fotó, hagyjuk a placeholder-t
