@@ -1,104 +1,200 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Barbi ❤️</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Barbi ❤️</title>
 
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#000000">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 
-  <style>
-    body{
-      margin:0;
-      min-height:100vh;
-      font-family: system-ui, Arial;
-      background: linear-gradient(180deg,#05060a,#0b0b10);
-      color:#fff;
-    }
+<style>
+:root{
+--bg1:#05060a;--bg2:#0b0b10;--gold:#f2cf7a;--gold2:#d7b15e;
+--card:rgba(255,255,255,.06);--stroke:rgba(255,255,255,.12);
+--text:rgba(255,255,255,.92);--muted:rgba(255,255,255,.65);
+--r:22px;
+}
+*{box-sizing:border-box}
+body{
+margin:0;min-height:100vh;font-family:system-ui,Arial;color:var(--text);
+background:linear-gradient(180deg,var(--bg1),var(--bg2));
+}
+.wrap{max-width:900px;margin:auto;padding:22px}
+.card{
+background:var(--card);border:1px solid var(--stroke);
+border-radius:var(--r);padding:16px;margin-top:14px;
+}
+h1,h2{margin:6px 0}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap}
+.btn{
+flex:1;border:0;border-radius:14px;padding:12px;
+font-weight:800;cursor:pointer;
+background:linear-gradient(135deg,var(--gold),var(--gold2));
+color:#000;
+}
+.btn.secondary{
+background:transparent;color:var(--text);
+border:1px solid var(--stroke)
+}
+.output{
+margin-top:10px;padding:10px;border-radius:14px;
+background:rgba(0,0,0,.25);min-height:42px
+}
 
-    .wrap{
-      max-width:900px;
-      margin:auto;
-      padding:20px;
-    }
+/* ===== GALÉRIA ===== */
+.gallery{
+display:grid;grid-template-columns:repeat(3,1fr);
+gap:10px;margin-top:10px
+}
+.ph{
+aspect-ratio:1/1;border-radius:14px;
+overflow:hidden;border:1px solid var(--stroke)
+}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
 
-    h1{margin:10px 0}
-    h2{margin:0}
-
-    .card{
-      background: rgba(255,255,255,.06);
-      border-radius:18px;
-      padding:16px;
-      margin-top:14px;
-      border:1px solid rgba(255,255,255,.12);
-    }
-
-    /* ===== GALÉRIA ===== */
-    .gallery{
-      display:grid;
-      grid-template-columns: repeat(3,1fr);
-      gap:10px;
-      margin-top:10px;
-    }
-
-    .ph{
-      aspect-ratio:1/1;
-      overflow:hidden;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.15);
-    }
-
-    .ph img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
-  </style>
+/* ===== OVERLAY ===== */
+.start-overlay{
+position:fixed;inset:0;display:none;
+background:rgba(0,0,0,.75);backdrop-filter:blur(12px);
+align-items:center;justify-content:center;z-index:9999
+}
+.start-card{
+background:rgba(255,255,255,.08);border-radius:22px;
+padding:18px;text-align:center;max-width:320px
+}
+.start-btn{
+width:100%;padding:14px;border-radius:14px;
+border:0;font-weight:800;cursor:pointer;
+background:linear-gradient(135deg,var(--gold),var(--gold2))
+}
+</style>
 </head>
 
 <body>
 <div class="wrap">
+<h1>Barbi ❤️</h1>
 
-  <h1>Barbi ❤️</h1>
+<div class="card">
+<h2>📅 Napi üzenet</h2>
+<div class="btnrow">
+<button class="btn" onclick="showDaily()">Mai üzenet</button>
+<button class="btn secondary" onclick="copyText('dailyOut')">Másolás</button>
+</div>
+<div class="output" id="dailyOut">Nyomd meg a gombot.</div>
+</div>
 
-  <div class="card">
-    <h2>📸 Képek</h2>
-    <p>Itt jelennek meg a feltöltött fotók.</p>
+<div class="card">
+<h2>💖 Okok</h2>
+<div class="btnrow">
+<button class="btn" onclick="showReason()">Adj egy okot</button>
+<button class="btn secondary" onclick="copyText('reasonOut')">Másolás</button>
+</div>
+<div class="output" id="reasonOut">Nyomd meg a gombot.</div>
+</div>
 
-    <div class="gallery" id="gallery"></div>
-  </div>
+<div class="card">
+<h2>🎵 Zene</h2>
+<div class="btnrow">
+<button class="btn" id="musicBtn" onclick="toggleMusic(true)">▶ Lejátszás</button>
+<button class="btn secondary" onclick="setVolume(.25)">Halk</button>
+</div>
+<div class="output" id="musicOut">music.mp3</div>
+<audio id="player"></audio>
+</div>
 
+<div class="card">
+<h2>📸 Képek</h2>
+<div class="gallery" id="gallery"></div>
+</div>
+
+<div class="card" style="text-align:center;color:var(--muted)">
+Kész ❤️
+</div>
+</div>
+
+<!-- OVERLAY -->
+<div class="start-overlay" id="overlay">
+<div class="start-card">
+<h3>Indítsd el a zenét</h3>
+<p>Egy koppintás kell.</p>
+<button class="start-btn" id="startBtn">▶ Start</button>
+</div>
 </div>
 
 <script>
-/* ====== IDE ÍRD A KÉPEIDET ======
-   FONTOS: a fájlnév PONTOSAN egyezzen
-   kis/nagybetű számít!
-*/
-const photos = [
-  "photos/1.jpg"
-  // ide jöhet több:
-  // "photos/2.jpg",
-  // "photos/IMG_1234.JPG"
+/* ===== NAPI ÜZENETEK ===== */
+const startDate=new Date("2026-02-14");
+const dailyMessages=[
+"02.14 üzenet","02.15","02.16","02.17","02.18","02.19",
+"02.20","02.21","02.22","02.23","02.24","02.25","02.26","02.27","02.28"
+];
+function showDaily(){
+const d=Math.floor((new Date()-startDate)/86400000);
+dailyOut.textContent=d<0?"Még nem.":d>=dailyMessages.length?"Vége ❤️":dailyMessages[d];
+}
+
+/* ===== OKOK ===== */
+const reasons=["Ok 1","Ok 2","Ok 3"];
+function showReason(){
+reasonOut.textContent=reasons[Math.floor(Math.random()*reasons.length)];
+}
+
+/* ===== ZENE ===== */
+const player=document.getElementById("player");
+const musicBtn=document.getElementById("musicBtn");
+const overlay=document.getElementById("overlay");
+const AUTO_KEY="barbi_auto";
+
+function ensureMusic(){
+if(!player.src){
+player.src="music.mp3";
+player.loop=true;player.volume=.1;
+}
+}
+async function toggleMusic(save){
+ensureMusic();
+try{
+if(player.paused){
+await player.play();
+musicBtn.textContent="⏸ Szünet";
+if(save) localStorage.setItem(AUTO_KEY,"1");
+}else{
+player.pause();musicBtn.textContent="▶ Lejátszás";
+}
+}catch{overlay.style.display="flex";}
+}
+document.getElementById("startBtn").onclick=async()=>{
+overlay.style.display="none";
+await toggleMusic(true);
+};
+window.onload=async()=>{
+if(localStorage.getItem(AUTO_KEY)==="1"){
+try{await toggleMusic(false);}catch{}
+}
+};
+function setVolume(v){ensureMusic();player.volume=v}
+
+/* ===== GALÉRIA ===== */
+/* ⚠️ EZT A SORT ÍRD ÁT A SAJÁT KÉPEDRE */
+const photos=[
+"photos/1.jpg"
 ];
 
-const gallery = document.getElementById("gallery");
-
+const gallery=document.getElementById("gallery");
 photos.forEach(src=>{
-  const d = document.createElement("div");
-  d.className = "ph";
-
-  const img = document.createElement("img");
-  img.src = src;
-  img.loading = "lazy";
-
-  d.appendChild(img);
-  gallery.appendChild(d);
+const d=document.createElement("div");
+d.className="ph";
+const i=document.createElement("img");
+i.src=src;i.loading="lazy";
+d.appendChild(i);gallery.appendChild(d);
 });
-</script>
 
+/* ===== MÁSOLÁS ===== */
+async function copyText(id){
+try{await navigator.clipboard.writeText(document.getElementById(id).innerText)}catch{}
+}
+</script>
 </body>
 </html>
