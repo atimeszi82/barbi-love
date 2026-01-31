@@ -615,8 +615,30 @@
   ];
 
   function renderGallery(){
-    const g = document.getElementById("gallery");
-    if(!g) return;
+  const g = document.getElementById("gallery");
+  if(!g || !photos || photos.length===0) return;
+
+  g.innerHTML = "";
+
+  photos.forEach((src) => {
+    const tile = document.createElement("div");
+    tile.className = "ph is-photo";
+
+    const img = document.createElement("img");
+    img.src = src;
+    img.loading = "lazy";
+
+    // 👉 KATTINTÁSOS NAGYÍTÁS
+    img.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openPhoto(src);
+    });
+
+    tile.appendChild(img);
+    g.appendChild(tile);
+  });
+}
+
 
     // ha nincs megadott fotó, hagyjuk a placeholder-t
     if(!photos || photos.length === 0) return;
