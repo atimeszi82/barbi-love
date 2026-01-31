@@ -372,207 +372,180 @@
       .pv-btn{ width: 42px; height: 42px; }
     }
 
-    /* ===== LOCK SCREEN OVERLAY ===== */
+    /* ================================
+       ✅ LOCK SCREEN (MINDIG KÉRJE)
+       ================================ */
     .lock-overlay{
-      position: fixed;
-      inset: 0;
-      z-index: 20000;
+      position:fixed;
+      inset:0;
       display:flex;
       align-items:center;
       justify-content:center;
       padding: 22px;
-      background: rgba(0,0,0,.80);
+      background: rgba(0,0,0,.78);
       backdrop-filter: blur(16px);
+      z-index: 20000;
     }
     .lock-card{
       width: min(560px, 100%);
-      border-radius: 24px;
-      padding: 18px 18px 16px;
+      border-radius: 26px;
+      padding: 20px 18px 16px;
       background: rgba(255,255,255,.08);
       border: 1px solid rgba(255,255,255,.14);
-      box-shadow: 0 22px 80px rgba(0,0,0,.6);
+      box-shadow: 0 24px 90px rgba(0,0,0,.60);
       text-align:center;
+      overflow:hidden;
+      position:relative;
     }
-    .lock-title{
-      margin: 6px 0 0;
-      font-size: 18px;
-      letter-spacing: .2px;
+    .lock-card:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(520px 220px at 20% 0%, rgba(242,207,122,.22), transparent 60%),
+        radial-gradient(520px 240px at 90% 30%, rgba(255,107,214,.18), transparent 62%);
+      pointer-events:none;
+      opacity:.9;
     }
-    .lock-sub{
-      margin: 6px 0 14px;
-      opacity: .70;
-      font-size: 13px;
-      line-height: 1.4;
-    }
-    .pin-row{
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      align-items:center;
-      margin: 6px 0 10px;
-    }
-    .pin-input{
-      width: 190px;
-      max-width: 60vw;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.25);
-      color: rgba(255,255,255,.92);
-      padding: 12px 14px;
-      font-size: 18px;
-      text-align:center;
-      letter-spacing: 6px;
-      outline: none;
-    }
-    .pin-input::placeholder{ letter-spacing: 2px; color: rgba(255,255,255,.35); }
-    .pin-btn{
-      border:0;
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-weight: 900;
-      cursor:pointer;
-      color: rgba(0,0,0,.88);
-      background: linear-gradient(135deg, var(--gold), var(--gold2));
-      min-width: 120px;
-    }
-    .pin-btn:active{ transform: translateY(1px); }
-    .lock-error{
-      min-height: 18px;
-      font-size: 12px;
-      color: rgba(255,140,140,.95);
-      opacity: 0;
-      transition: opacity .18s ease;
-    }
-    .lock-error.show{ opacity: 1; }
+    .lock-inner{ position:relative; }
 
-    /* ===== PIROS SZÍV + LAKAT ===== */
     .lock-heart{
-      width: 190px;
-      height: 190px;
-      margin: 10px auto 14px;
+      width: 150px;
+      height: 150px;
+      margin: 4px auto 12px;
       position: relative;
-      filter: drop-shadow(0 18px 50px rgba(0,0,0,.62));
+      filter: drop-shadow(0 16px 40px rgba(0,0,0,.55));
+      transform: translateZ(0);
       animation: heartFloat 4.5s ease-in-out infinite;
     }
-    @keyframes heartFloat{ 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-7px); } }
-
+    @keyframes heartFloat{
+      0%,100%{ transform: translateY(0); }
+      50%{ transform: translateY(-6px); }
+    }
     .lock-heart:before,
     .lock-heart:after{
       content:"";
       position:absolute;
-      width: 118px;
-      height: 170px;
+      width: 92px;
+      height: 136px;
+      left: 58px;
       top: 18px;
-      background: linear-gradient(180deg, #ff2d55, #d1003f);
-      border-radius: 90px 90px 0 0;
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.20),
-        inset 0 -18px 28px rgba(0,0,0,.22);
-    }
-    .lock-heart:before{
-      left: 78px;
+      background: linear-gradient(135deg, rgba(242,207,122,.95), rgba(255,107,214,.72));
+      border-radius: 92px 92px 0 0;
       transform: rotate(-45deg);
       transform-origin: 0 100%;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
     }
     .lock-heart:after{
       left: 0px;
       transform: rotate(45deg);
       transform-origin: 100% 100%;
     }
-
-    .lock-draw{
+    .lock-lock{
       position:absolute;
       inset:0;
       display:flex;
       align-items:center;
       justify-content:center;
+      font-size: 44px;
+      color: rgba(0,0,0,.78);
+      text-shadow: 0 2px 0 rgba(255,255,255,.18);
       pointer-events:none;
     }
 
-    .padlock{
-      width: 64px;
-      height: 52px;
-      position: relative;
-      transform: translateY(12px);
-      filter: drop-shadow(0 12px 22px rgba(0,0,0,.50));
+    .lock-title{
+      margin: 0 0 10px;
+      font-size: 18px;
+      letter-spacing:.2px;
+      opacity:.92;
     }
-    .padlock .shackle{
-      position:absolute;
-      left: 50%;
-      top: -22px;
-      width: 52px;
-      height: 40px;
-      transform: translateX(-50%);
-      border: 7px solid rgba(255,255,255,.88);
-      border-bottom: 0;
-      border-radius: 28px 28px 0 0;
-      opacity:.95;
-    }
-    .padlock .body{
-      position:absolute;
-      left: 50%;
-      top: 10px;
-      width: 64px;
-      height: 46px;
-      transform: translateX(-50%);
-      background: rgba(255,255,255,.88);
-      border-radius: 14px;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.10);
-    }
-    .padlock .keyhole{
-      position:absolute;
-      left: 50%;
-      top: 26px;
-      width: 12px;
-      height: 12px;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,.65);
+    .lock-date{
+      font-weight: 900;
+      letter-spacing: .35em;
+      margin-left: .35em;
+      display:inline-block;
+      padding: 10px 14px;
       border-radius: 999px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.10);
+      color: rgba(255,255,255,.92);
     }
-    .padlock .keyhole:after{
-      content:"";
-      position:absolute;
-      left: 50%;
-      top: 9px;
-      width: 5px;
-      height: 12px;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,.65);
-      border-radius: 6px;
+
+    .lock-row{
+      display:flex;
+      gap:10px;
+      margin-top: 14px;
+      flex-wrap:wrap;
+    }
+    .lock-input{
+      flex: 1;
+      min-width: 220px;
+      height: 46px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.26);
+      color: rgba(255,255,255,.92);
+      padding: 0 14px;
+      font-size: 16px;
+      outline: none;
+    }
+    .lock-input::placeholder{ color: rgba(255,255,255,.38); }
+    .lock-open{
+      height: 46px;
+      border:0;
+      border-radius: 14px;
+      padding: 0 16px;
+      font-weight: 900;
+      cursor:pointer;
+      color: rgba(0,0,0,.88);
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      box-shadow: 0 10px 26px rgba(242,207,122,.18);
+      min-width: 140px;
+    }
+    .lock-hint{
+      margin: 10px 0 0;
+      font-size: 12px;
+      color: rgba(255,255,255,.62);
+      min-height: 16px;
+    }
+    .shake{
+      animation: shake .35s linear;
+    }
+    @keyframes shake{
+      0%,100%{ transform: translateX(0); }
+      20%{ transform: translateX(-8px); }
+      40%{ transform: translateX(8px); }
+      60%{ transform: translateX(-6px); }
+      80%{ transform: translateX(6px); }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- LOCK SCREEN -->
+  <!-- ✅ LOCK SCREEN (mindig kér kódot) -->
   <div class="lock-overlay" id="lockOverlay">
-    <div class="lock-card">
-      <div class="lock-heart" aria-hidden="true">
-        <div class="lock-draw">
-          <div class="padlock" aria-hidden="true">
-            <div class="shackle"></div>
-            <div class="body"></div>
-            <div class="keyhole"></div>
-          </div>
+    <div class="lock-card" id="lockCard">
+      <div class="lock-inner">
+        <div class="lock-heart" aria-hidden="true">
+          <div class="lock-lock">🔒</div>
         </div>
+
+        <div class="lock-title">
+          <span class="lock-date">10·21</span>
+        </div>
+
+        <div class="lock-row">
+          <input class="lock-input" id="lockInput" inputmode="numeric" autocomplete="one-time-code"
+                 placeholder="kód" aria-label="Belépőkód" />
+          <button class="lock-open" id="lockBtn">Nyitás</button>
+        </div>
+
+        <div class="lock-hint" id="lockHint"></div>
       </div>
-
-      <h3 class="lock-title">Belépés</h3>
-      <p class="lock-sub">Írd be a dátum kódot.</p>
-
-      <div class="pin-row">
-        <input class="pin-input" id="pinInput" inputmode="numeric" autocomplete="off"
-               placeholder="••••" maxlength="4" />
-        <button class="pin-btn" id="pinBtn">Nyitás</button>
-      </div>
-
-      <div class="lock-error" id="lockError">Hibás kód.</div>
     </div>
   </div>
 
-  <!-- APP -->
-  <div class="wrap" id="appWrap" style="display:none;">
+  <div class="wrap">
     <div class="topbar">
       <div class="brand"><span class="dot"></span> <b>Barbi</b> ❤️</div>
       <div class="chip" id="todayChip">—</div>
@@ -674,62 +647,64 @@
   </div>
 
 <script>
-  /* =======================
-     LOCK SCREEN (mindig kérje)
-     ======================= */
-  const LOCK_CODE = "1021"; // október 21
+  // ==========================
+  // ✅ LOCK LOGIKA (MINDIG KÉRJE)
+  // ==========================
+  const LOCK_CODE_MD = "1021"; // Oct 21 (MMDD)
+  const LOCK_CODE_DM = "2110"; // (DDMM) - csak biztonságból
 
   const lockOverlay = document.getElementById("lockOverlay");
-  const appWrap = document.getElementById("appWrap");
-  const pinInput = document.getElementById("pinInput");
-  const pinBtn = document.getElementById("pinBtn");
-  const lockError = document.getElementById("lockError");
+  const lockCard    = document.getElementById("lockCard");
+  const lockInput   = document.getElementById("lockInput");
+  const lockBtn     = document.getElementById("lockBtn");
+  const lockHint    = document.getElementById("lockHint");
 
-  function showLock(){
-    lockOverlay.style.display = "flex";
-    appWrap.style.display = "none";
-    pinInput.value = "";
-    lockError.classList.remove("show");
-    setTimeout(()=>pinInput.focus(), 60);
+  function normalizeDigits(v){
+    return String(v || "").replace(/\D/g, "");
+  }
+
+  function lockError(msg){
+    lockHint.textContent = msg || "Nem jó kód.";
+    lockCard.classList.remove("shake");
+    void lockCard.offsetWidth;
+    lockCard.classList.add("shake");
+    if (navigator.vibrate) navigator.vibrate([40, 50, 40]);
   }
 
   function unlock(){
-    const v = (pinInput.value || "").replace(/\D/g, "").slice(0,4);
-    if (v === LOCK_CODE){
-      lockOverlay.style.display = "none";
-      appWrap.style.display = "block";
-    }else{
-      lockError.classList.add("show");
-      pinInput.value = "";
-      pinInput.focus();
-      // kis rázás effekt (nem kötelező, de jó)
-      const card = lockOverlay.querySelector(".lock-card");
-      card.animate(
-        [{transform:"translateX(0)"},{transform:"translateX(-6px)"},{transform:"translateX(6px)"},{transform:"translateX(0)"}],
-        {duration: 220, iterations: 1}
-      );
+    lockOverlay.style.display = "none";
+    // fókusz a fő oldalon: semmit nem mentünk el, tehát mindig kérni fogja újranyitáskor
+  }
+
+  function checkLock(){
+    const val = normalizeDigits(lockInput.value);
+    if (val === LOCK_CODE_MD || val === LOCK_CODE_DM){
+      unlock();
+    } else {
+      lockInput.value = "";
+      lockInput.focus();
+      lockError("Hibás kód.");
     }
   }
 
-  pinBtn.addEventListener("click", unlock);
-  pinInput.addEventListener("keydown", (e)=>{
-    if(e.key === "Enter") unlock();
+  lockBtn.addEventListener("click", checkLock);
+  lockInput.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter") checkLock();
   });
 
-  // induláskor mindig kérje
-  showLock();
+  window.addEventListener("load", ()=>{
+    // mindig kérje:
+    lockOverlay.style.display = "flex";
+    setTimeout(()=> lockInput.focus(), 120);
+  });
 
-  /* =======================
-     DÁTUM CHIP
-     ======================= */
+  // === DÁTUM + CHIP ===
   const chip = document.getElementById('todayChip');
   const now = new Date();
   const hu = new Intl.DateTimeFormat('hu-HU', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
   chip.textContent = hu.format(now);
 
-  /* =======================
-     NAPI ÜZENETEK
-     ======================= */
+  // === NAPI ÜZENETEK (IDE MAJD TE ÍROD BE) ===
   const startDate = new Date("2026-02-14T00:00:00");
   const dailyMessages = [
     "Ide jön majd a 02.14-es üzenet (te írod).",
@@ -752,9 +727,7 @@
     out.textContent = dailyMessages[idx];
   }
 
-  /* =======================
-     OKOK (módosíthatod)
-     ======================= */
+  // === OKOK ===
   const reasons = [
     "Mert mindig tudod holvan amit keresek!",
     "Csak mert!",
@@ -763,7 +736,7 @@
     "Mert vagy nekem!",
     "Mert hiszek abban, hogy jobbak lehetünk egymáshoz!",
     "Mert szeretem mikor...",
-    "Mert hiányzól mikor nem vagy."
+    "Mert hiányzól mikor nem vagy.",
   ];
 
   function showReason(){
@@ -771,9 +744,7 @@
     out.textContent = reasons[Math.floor(Math.random()*reasons.length)];
   }
 
-  /* =======================
-     ZENE
-     ======================= */
+  // === ZENE ===
   const player = document.getElementById('player');
   const musicBtn = document.getElementById('musicBtn');
   const musicState = document.getElementById('musicState');
@@ -853,9 +824,7 @@
     }
   });
 
-  /* =======================
-     MÁSOLÁS
-     ======================= */
+  // === MÁSOLÁS ===
   async function copyText(id){
     const el = document.getElementById(id);
     const txt = (el.innerText || "").trim();
@@ -869,9 +838,7 @@
     }
   }
 
-  /* =======================
-     GALÉRIA
-     ======================= */
+  // ✅ === GALÉRIA – FOTÓLISTA ===
   const photos = [
     "photos/1.jpg","photos/2.jpg","photos/3.jpg","photos/4.jpg",
     "photos/5.jpg","photos/6.jpg","photos/7.jpg","photos/8.jpg",
@@ -905,9 +872,7 @@
     });
   }
 
-  /* =======================
-     FULLSCREEN + SWIPE
-     ======================= */
+  // === FULLSCREEN (SWIPE + ARROWS) ===
   let currentIndex = 0;
 
   function indexOfPhoto(src){
@@ -939,6 +904,7 @@
 
   document.getElementById("photoViewerImg").addEventListener("click", (e)=>e.stopPropagation());
 
+  // SWIPE
   const viewer = document.getElementById("photoViewer");
   let sx = 0, sy = 0, st = 0;
 
