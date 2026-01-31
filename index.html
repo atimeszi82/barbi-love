@@ -249,13 +249,14 @@
       padding: 8px;
     }
 
-    /* ✅ ÚJ: ha valódi fotó van, akkor ne takarja a :before overlay */
+    /* ha valódi fotó van, akkor ne takarja a :before overlay */
     .ph.is-photo:before{ display:none; }
     .ph img{
       width:100%;
       height:100%;
       object-fit:cover;
       display:block;
+      cursor: zoom-in;
     }
 
     .footer{
@@ -309,6 +310,7 @@
       cursor:pointer;
       user-select:none;
     }
+
     /* === FULLSCREEN KÉPNÉZET === */
     .photo-viewer{
       position:fixed;
@@ -325,6 +327,7 @@
       max-height:95vh;
       border-radius:16px;
       box-shadow:0 20px 60px rgba(0,0,0,.6);
+      cursor: default;
     }
     .photo-viewer:after{
       content:"✕";
@@ -336,7 +339,6 @@
       opacity:.8;
       cursor:pointer;
     }
-
   </style>
 </head>
 
@@ -433,6 +435,11 @@
     </div>
   </div>
 
+  <!-- FULLSCREEN PHOTO VIEWER -->
+  <div class="photo-viewer" id="photoViewer" onclick="closePhoto()">
+    <img id="photoViewerImg" src="" alt="">
+  </div>
+
 <script>
   // === DÁTUM + CHIP ===
   const chip = document.getElementById('todayChip');
@@ -444,20 +451,8 @@
   const startDate = new Date("2026-02-14T00:00:00");
   const dailyMessages = [
     "Ide jön majd a 02.14-es üzenet (te írod).",
-    "02.15 …",
-    "02.16 …",
-    "02.17 …",
-    "02.18 …",
-    "02.19 …",
-    "02.20 …",
-    "02.21 …",
-    "02.22 …",
-    "02.23 …",
-    "02.24 …",
-    "02.25 …",
-    "02.26 …",
-    "02.27 …",
-    "02.28 …"
+    "02.15 …","02.16 …","02.17 …","02.18 …","02.19 …","02.20 …",
+    "02.21 …","02.22 …","02.23 …","02.24 …","02.25 …","02.26 …","02.27 …","02.28 …"
   ];
 
   function dayIndex(){
@@ -478,9 +473,7 @@
   // === OKOK (IDE IS TE ÍRSZ) ===
   const reasons = [
     "Ide jönnek az okok (te írod).",
-    "Ok #2 …",
-    "Ok #3 …",
-    "Ok #4 …"
+    "Ok #2 …","Ok #3 …","Ok #4 …"
   ];
 
   function showReason(){
@@ -502,7 +495,6 @@
   let musicLoaded = false;
   let playing = false;
 
-  // Autoplay emlékezés
   const AUTO_KEY = "barbi_autoplay_ok_v1";
 
   function ensureMusic(){
@@ -527,16 +519,12 @@
     musicState.textContent = on ? "ON" : "OFF";
   }
 
-  function showOverlay(){
-    overlay.style.display = "flex";
-  }
-  function hideOverlay(){
-    overlay.style.display = "none";
-  }
+  function showOverlay(){ overlay.style.display = "flex"; }
+  function hideOverlay(){ overlay.style.display = "none"; }
 
   async function tryPlay(){
     ensureMusic();
-    await player.play(); // dobhat hibát, ha blokkolja
+    await player.play();
     setUI(true);
   }
 
@@ -557,28 +545,20 @@
     }
   }
 
-  // Overlay gombok
   startBtn.addEventListener('click', async () => {
     try{
       await tryPlay();
       localStorage.setItem(AUTO_KEY, "1");
-    }catch(e){
-      // ha mégsem megy, nincs gond, bezárjuk
-    }
+    }catch(e){}
     hideOverlay();
   });
 
   startSkip.addEventListener('click', () => hideOverlay());
 
-  // OKOS AUTOPLAY: csak ha korábban engedte a user
   window.addEventListener('load', async () => {
     if (localStorage.getItem(AUTO_KEY) === "1") {
-      try{
-        await tryPlay();
-      }catch(e){
-        // ha mégis blokkolja, felajánljuk a Start-ot
-        showOverlay();
-      }
+      try{ await tryPlay(); }
+      catch(e){ showOverlay(); }
     }
   });
 
@@ -597,63 +577,16 @@
   }
 
   // ✅ === GALÉRIA – ITT ADOD MEG A FOTÓKAT ===
-  // Írd át a fájlneveket pontosan arra, amit a photos/ mappába feltöltöttél.
-  // Kis/nagybetű számít!
   const photos = [
-    "photos/1.jpg",
-    "photos/2.jpg",
-    "photos/3.jpg",
-    "photos/4.jpg",
-    "photos/5.jpg",
-    "photos/6.jpg",
-    "photos/7.jpg",
-    "photos/8.jpg",
-    "photos/9.jpg",
-    "photos/10.jpg",
-    "photos/11.jpg",
-    "photos/12.jpg",
+    "photos/1.jpg","photos/2.jpg","photos/3.jpg","photos/4.jpg",
+    "photos/5.jpg","photos/6.jpg","photos/7.jpg","photos/8.jpg",
+    "photos/9.jpg","photos/10.jpg","photos/11.jpg","photos/12.jpg"
   ];
 
   function renderGallery(){
-  const g = document.getElementById("gallery");
-  if(!g || !photos || photos.length===0) return;
+    const g = document.getElementById("gallery");
+    if(!g || !photos || photos.length===0) return;
 
-  g.innerHTML = "";
-
-  photos.forEach((src) => {
-    const tile = document.createElement("div");
-    tile.className = "ph is-photo";
-
-    const img = document.createElement("img");
-    img.src = src;
-    img.loading = "lazy";
-
-    // 👉 KATTINTÁSOS NAGYÍTÁS
-    img.addEventListener("click", (e) => {
-      e.stopPropagation();
-      openPhoto(src);
-    });
-
-    tile.appendChild(img);
-    g.appendChild(tile);
-  });
-}
-function openPhoto(src){
-  const v = document.getElementById("photoViewer");
-  const i = document.getElementById("photoViewerImg");
-  i.src = src;
-  v.style.display = "flex";
-}
-
-function closePhoto(){
-  document.getElementById("photoViewer").style.display = "none";
-}
-
-
-    // ha nincs megadott fotó, hagyjuk a placeholder-t
-    if(!photos || photos.length === 0) return;
-
-    // töröljük a placeholder blokkokat
     g.innerHTML = "";
 
     photos.forEach((src) => {
@@ -665,18 +598,40 @@ function closePhoto(){
       img.alt = "";
       img.loading = "lazy";
 
+      // ha nem létezik a fájl, ne legyen "törött" ikon
+      img.onerror = () => tile.remove();
+
+      img.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openPhoto(src);
+      });
+
       tile.appendChild(img);
       g.appendChild(tile);
     });
   }
 
-  // oldalbetöltéskor kirajzoljuk
+  function openPhoto(src){
+    const v = document.getElementById("photoViewer");
+    const i = document.getElementById("photoViewerImg");
+    i.src = src;
+    v.style.display = "flex";
+  }
+
+  function closePhoto(){
+    document.getElementById("photoViewer").style.display = "none";
+  }
+
+  // ne záródjon be, ha magára a képre kattintasz
+  document.getElementById("photoViewerImg").addEventListener("click", (e)=>e.stopPropagation());
+
+  // ESC bezárás (PC)
+  window.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape") closePhoto();
+  });
+
   renderGallery();
 </script>
-  <!-- FULLSCREEN PHOTO VIEWER -->
-<div class="photo-viewer" id="photoViewer" onclick="closePhoto()">
-  <img id="photoViewerImg" src="">
-</div>
 
 </body>
 </html>
