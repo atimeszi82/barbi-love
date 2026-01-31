@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Barbi ❤️</title>
 
   <link rel="manifest" href="manifest.webmanifest">
@@ -10,557 +10,95 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png">
 
   <style>
-    :root{
-      --bg1:#05060a;
-      --bg2:#0b0b10;
-      --card: rgba(255,255,255,.06);
-      --card2: rgba(255,255,255,.10);
-      --stroke: rgba(255,255,255,.14);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.66);
-      --gold: #f2cf7a;
-      --gold2:#d7b15e;
-      --shadow: 0 18px 60px rgba(0,0,0,.55);
-      --r: 22px;
-    }
-
-    *{box-sizing:border-box}
     body{
       margin:0;
       min-height:100vh;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color: var(--text);
-      background:
-        radial-gradient(900px 600px at 20% 10%, rgba(242,207,122,.16), transparent 55%),
-        radial-gradient(700px 500px at 85% 25%, rgba(154,110,255,.14), transparent 55%),
-        radial-gradient(900px 700px at 45% 85%, rgba(80,170,255,.12), transparent 55%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      overflow-x:hidden;
-    }
-
-    body:before{
-      content:"";
-      position:fixed; inset:0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
-      opacity:.10;
-      pointer-events:none;
-      mix-blend-mode: overlay;
+      font-family: system-ui, Arial;
+      background: linear-gradient(180deg,#05060a,#0b0b10);
+      color:#fff;
     }
 
     .wrap{
-      max-width: 820px;
-      margin: 0 auto;
-      padding: 28px 18px 60px;
+      max-width:900px;
+      margin:auto;
+      padding:20px;
     }
 
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom: 16px;
-    }
-
-    .brand{
-      display:flex; align-items:center; gap:10px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.10);
-      backdrop-filter: blur(10px);
-    }
-    .dot{
-      width:10px;height:10px;border-radius:999px;
-      background: linear-gradient(135deg, var(--gold), #ff6bd6);
-      box-shadow: 0 0 22px rgba(242,207,122,.35);
-    }
-    .brand b{letter-spacing:.2px}
-    .chip{
-      font-size: 12px;
-      color: var(--muted);
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      backdrop-filter: blur(10px);
-    }
-
-    .hero{
-      position:relative;
-      padding: 26px 22px;
-      border-radius: var(--r);
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
-      border: 1px solid rgba(255,255,255,.12);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      overflow:hidden;
-    }
-    .hero:after{
-      content:"";
-      position:absolute; inset:-2px;
-      background: radial-gradient(500px 200px at 30% 0%, rgba(242,207,122,.22), transparent 60%),
-                  radial-gradient(420px 220px at 90% 30%, rgba(255,107,214,.16), transparent 60%);
-      pointer-events:none;
-    }
-    .hero h1{
-      position:relative;
-      margin: 0 0 6px;
-      font-size: 34px;
-      letter-spacing: .2px;
-    }
-    .hero p{
-      position:relative;
-      margin: 0;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.55;
-      max-width: 58ch;
-    }
-
-    .grid{
-      margin-top: 16px;
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
-    @media (min-width: 720px){
-      .grid{ grid-template-columns: 1fr 1fr; }
-      .span2{ grid-column: span 2; }
-    }
+    h1{margin:10px 0}
+    h2{margin:0}
 
     .card{
-      position:relative;
-      border-radius: var(--r);
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,.10);
-      box-shadow: 0 10px 40px rgba(0,0,0,.35);
-      backdrop-filter: blur(14px);
-      padding: 18px 18px 16px;
-      overflow:hidden;
-      transform: translateY(0);
-      transition: transform .18s ease, border-color .18s ease, background .18s ease;
-    }
-    .card:hover{
-      transform: translateY(-2px);
-      border-color: rgba(242,207,122,.28);
-      background: rgba(255,255,255,.07);
-    }
-
-    .title{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom: 10px;
-    }
-    .title h2{
-      margin:0;
-      font-size: 16px;
-      letter-spacing:.2px;
-    }
-    .badge{
-      font-size: 12px;
-      color: rgba(0,0,0,.82);
-      background: linear-gradient(135deg, var(--gold), var(--gold2));
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-weight: 700;
-      box-shadow: 0 8px 20px rgba(242,207,122,.25);
-    }
-
-    .text{
-      margin:0 0 12px;
-      color: var(--muted);
-      line-height: 1.55;
-      font-size: 15px;
-    }
-
-    .btnrow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .btn{
-      flex:1;
-      min-width: 160px;
-      border: 0;
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-weight: 800;
-      letter-spacing:.2px;
-      cursor:pointer;
-      color: rgba(0,0,0,.88);
-      background: linear-gradient(135deg, var(--gold), var(--gold2));
-      box-shadow: 0 10px 26px rgba(242,207,122,.18);
-      transition: transform .12s ease, filter .12s ease;
-    }
-    .btn:hover{ filter: brightness(1.05); }
-    .btn:active{ transform: translateY(1px) scale(.99); }
-
-    .btn.secondary{
-      color: var(--text);
       background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      box-shadow: none;
+      border-radius:18px;
+      padding:16px;
+      margin-top:14px;
+      border:1px solid rgba(255,255,255,.12);
     }
 
-    .output{
-      margin-top: 10px;
-      padding: 12px 12px;
-      border-radius: 14px;
-      background: rgba(0,0,0,.22);
-      border: 1px solid rgba(255,255,255,.08);
-      color: rgba(255,255,255,.88);
-      min-height: 44px;
-      display:flex;
-      align-items:center;
-      line-height:1.4;
-    }
-
+    /* ===== GALÉRIA ===== */
     .gallery{
       display:grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3,1fr);
       gap:10px;
+      margin-top:10px;
     }
+
     .ph{
-      aspect-ratio: 1/1;
-      border-radius: 16px;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-      border: 1px solid rgba(255,255,255,.10);
+      aspect-ratio:1/1;
       overflow:hidden;
-      position:relative;
-    }
-    .ph:before{
-      content:"";
-      position:absolute; inset:0;
-      background: radial-gradient(140px 140px at 30% 30%, rgba(242,207,122,.22), transparent 60%),
-                  radial-gradient(120px 120px at 70% 70%, rgba(255,107,214,.18), transparent 65%);
-      opacity:.7;
-    }
-    .ph span{
-      position:absolute; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      color: rgba(255,255,255,.75);
-      font-weight:700;
-      font-size: 12px;
-      letter-spacing:.2px;
-      text-align:center;
-      padding: 8px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.15);
     }
 
-    .footer{
-      margin-top: 18px;
-      text-align:center;
-      color: rgba(255,255,255,.52);
-      font-size: 12px;
-    }
-    a{color: var(--gold); text-decoration:none}
-
-    /* === AUTOPLAY OVERLAY === */
-    .start-overlay{
-      position: fixed;
-      inset: 0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: 22px;
-      background: rgba(0,0,0,.72);
-      backdrop-filter: blur(14px);
-      z-index: 9999;
-    }
-    .start-card{
-      max-width: 520px;
-      width: 100%;
-      border-radius: 22px;
-      padding: 18px 18px 16px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: 0 20px 70px rgba(0,0,0,.55);
-      text-align:center;
-      color: rgba(255,255,255,.92);
-    }
-    .start-card h3{ margin: 6px 0 8px; font-size: 18px; }
-    .start-card p{ margin: 0 0 14px; opacity: .75; line-height: 1.4; }
-    .start-btn{
+    .ph img{
       width:100%;
-      border:0;
-      border-radius: 14px;
-      padding: 14px 14px;
-      font-size: 16px;
-      font-weight: 800;
-      cursor:pointer;
-      color: rgba(0,0,0,.88);
-      background: linear-gradient(135deg, var(--gold), var(--gold2));
-    }
-    .start-skip{
-      margin-top: 10px;
-      font-size: 12px;
-      opacity: .65;
-      cursor:pointer;
-      user-select:none;
+      height:100%;
+      object-fit:cover;
+      display:block;
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand"><span class="dot"></span> <b>Barbi</b> ❤️</div>
-      <div class="chip" id="todayChip">—</div>
-    </div>
+<div class="wrap">
 
-    <div class="hero">
-      <h1>Barbi ❤️</h1>
-      <p>
-        Ez egy kis privát app. <br>
-        <span style="opacity:.92">Képek + zene + napi üzenetek</span> – mind egy helyen.
-      </p>
-    </div>
+  <h1>Barbi ❤️</h1>
 
-    <div class="grid">
+  <div class="card">
+    <h2>📸 Képek</h2>
+    <p>Itt jelennek meg a feltöltött fotók.</p>
 
-      <div class="card span2">
-        <div class="title">
-          <h2>📅 Napi üzenet</h2>
-          <div class="badge">15 nap</div>
-        </div>
-        <p class="text">A gomb megnyomására kiírja a mai üzenetet. (A szöveget te fogod majd beírni.)</p>
-        <div class="btnrow">
-          <button class="btn" onclick="showDaily()">Mai üzenet</button>
-          <button class="btn secondary" onclick="copyText('dailyOut')">Másolás</button>
-        </div>
-        <div class="output" id="dailyOut">Nyomd meg a „Mai üzenet” gombot.</div>
-      </div>
-
-      <div class="card">
-        <div class="title">
-          <h2>💖 Okok</h2>
-          <div class="badge">Random</div>
-        </div>
-        <p class="text">Egy ok, egy mosoly. (Ezt is te töltöd majd fel.)</p>
-        <div class="btnrow">
-          <button class="btn" onclick="showReason()">Adj egy okot</button>
-          <button class="btn secondary" onclick="copyText('reasonOut')">Másolás</button>
-        </div>
-        <div class="output" id="reasonOut">Nyomd meg az „Adj egy okot” gombot.</div>
-      </div>
-
-      <div class="card">
-        <div class="title">
-          <h2>🎵 Zene</h2>
-          <div class="badge" id="musicState">OFF</div>
-        </div>
-        <p class="text">Androidon teljes autoplay nem garantált, ezért első alkalommal egy koppintás kell.</p>
-        <div class="btnrow">
-          <button class="btn" onclick="toggleMusic(true)" id="musicBtn">▶ Lejátszás</button>
-          <button class="btn secondary" onclick="setVolume(.25)">Halk</button>
-        </div>
-        <div class="output" id="musicOut">Zene: <b>music.mp3</b></div>
-        <audio id="player" preload="none"></audio>
-      </div>
-
-      <div class="card span2">
-        <div class="title">
-          <h2>📸 Képek</h2>
-          <div class="badge">Galéria</div>
-        </div>
-        <p class="text">Tölts fel képeket a repo-ba <b>photos/</b> mappába, és itt megjelennek.</p>
-
-        <div class="gallery" id="gallery">
-          <div class="ph"><span>photos/1.jpg</span></div>
-          <div class="ph"><span>photos/2.jpg</span></div>
-          <div class="ph"><span>photos/3.jpg</span></div>
-        </div>
-
-        <div class="footer">
-          Tipp: ha feltöltötted a képeket, én adok 2 kattintásos megoldást a galéria listára.
-        </div>
-      </div>
-
-    </div>
-
-    <div class="footer">
-      <span id="status">Kész.</span>
-    </div>
+    <div class="gallery" id="gallery"></div>
   </div>
 
-  <!-- START OVERLAY (csak ha kell) -->
-  <div class="start-overlay" id="startOverlay" style="display:none;">
-    <div class="start-card">
-      <div style="font-size:26px;">❤️</div>
-      <h3>Indítsd el a zenét</h3>
-      <p>Egy koppintás kell (a telefon így engedi), és indul a háttérzene.</p>
-      <button class="start-btn" id="startBtn">▶ Start</button>
-      <div class="start-skip" id="startSkip">Most ne (csendben marad)</div>
-    </div>
-  </div>
+</div>
 
 <script>
-  // === DÁTUM + CHIP ===
-  const chip = document.getElementById('todayChip');
-  const now = new Date();
-  const hu = new Intl.DateTimeFormat('hu-HU', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
-  chip.textContent = hu.format(now);
+/* ====== IDE ÍRD A KÉPEIDET ======
+   FONTOS: a fájlnév PONTOSAN egyezzen
+   kis/nagybetű számít!
+*/
+const photos = [
+  "photos/1.jpg"
+  // ide jöhet több:
+  // "photos/2.jpg",
+  // "photos/IMG_1234.JPG"
+];
 
-  // === NAPI ÜZENETEK (IDE MAJD TE ÍROD BE) ===
-  const startDate = new Date("2026-02-14T00:00:00");
-  const dailyMessages = [
-    "Ide jön majd a 02.14-es üzenet (te írod).",
-    "02.15 …",
-    "02.16 …",
-    "02.17 …",
-    "02.18 …",
-    "02.19 …",
-    "02.20 …",
-    "02.21 …",
-    "02.22 …",
-    "02.23 …",
-    "02.24 …",
-    "02.25 …",
-    "02.26 …",
-    "02.27 …",
-    "02.28 …"
-  ];
+const gallery = document.getElementById("gallery");
 
-  function dayIndex(){
-    const today = new Date();
-    const t0 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const s0 = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-    return Math.floor((t0 - s0) / (1000*60*60*24));
-  }
+photos.forEach(src=>{
+  const d = document.createElement("div");
+  d.className = "ph";
 
-  function showDaily(){
-    const idx = dayIndex();
-    const out = document.getElementById('dailyOut');
-    if (idx < 0){ out.textContent = "Még nincs Valentin-nap 🙂"; return; }
-    if (idx >= dailyMessages.length){ out.textContent = "A 15 napos sorozat véget ért. ❤️"; return; }
-    out.textContent = dailyMessages[idx];
-  }
+  const img = document.createElement("img");
+  img.src = src;
+  img.loading = "lazy";
 
-  // === OKOK (IDE IS TE ÍRSZ) ===
-  const reasons = [
-    "Ide jönnek az okok (te írod).",
-    "Ok #2 …",
-    "Ok #3 …",
-    "Ok #4 …"
-  ];
-
-  function showReason(){
-    const out = document.getElementById('reasonOut');
-    out.textContent = reasons[Math.floor(Math.random()*reasons.length)];
-  }
-
-  // === ZENE ===
-  const player = document.getElementById('player');
-  const musicBtn = document.getElementById('musicBtn');
-  const musicState = document.getElementById('musicState');
-  const musicOut = document.getElementById('musicOut');
-  const statusEl = document.getElementById('status');
-
-  const overlay = document.getElementById('startOverlay');
-  const startBtn = document.getElementById('startBtn');
-  const startSkip = document.getElementById('startSkip');
-
-  let musicLoaded = false;
-  let playing = false;
-
-  // Autoplay emlékezés
-  const AUTO_KEY = "barbi_autoplay_ok_v1";
-
-  function ensureMusic(){
-    if (!musicLoaded){
-      player.src = "music.mp3";
-      player.loop = true;
-      player.volume = 0.10;
-      musicLoaded = true;
-      musicOut.innerHTML = 'Zene: <b>music.mp3</b>';
-    }
-  }
-
-  function setVolume(v){
-    ensureMusic();
-    player.volume = Math.max(0, Math.min(1, v));
-    statusEl.textContent = "Hangerő: " + Math.round(player.volume*100) + "%";
-  }
-
-  function setUI(on){
-    playing = on;
-    musicBtn.textContent = on ? "⏸ Szünet" : "▶ Lejátszás";
-    musicState.textContent = on ? "ON" : "OFF";
-  }
-
-  function showOverlay(){
-    overlay.style.display = "flex";
-  }
-  function hideOverlay(){
-    overlay.style.display = "none";
-  }
-
-  async function tryPlay(){
-    ensureMusic();
-    await player.play(); // dobhat hibát, ha blokkolja
-    setUI(true);
-  }
-
-  async function toggleMusic(markAutoplay){
-    ensureMusic();
-    try{
-      if (!playing){
-        await player.play();
-        setUI(true);
-        if (markAutoplay) localStorage.setItem(AUTO_KEY, "1");
-      }else{
-        player.pause();
-        setUI(false);
-      }
-    }catch(e){
-      musicOut.textContent = "A böngésző blokkolta az automatikus lejátszást. Koppints a Start gombra.";
-      showOverlay();
-    }
-  }
-
-  // Overlay gombok
-  startBtn.addEventListener('click', async () => {
-    try{
-      await tryPlay();
-      localStorage.setItem(AUTO_KEY, "1");
-    }catch(e){
-      // ha mégsem megy, nincs gond, bezárjuk
-    }
-    hideOverlay();
-  });
-
-  startSkip.addEventListener('click', () => hideOverlay());
-
-  // OKOS AUTOPLAY: csak ha korábban engedte a user
-  window.addEventListener('load', async () => {
-    if (localStorage.getItem(AUTO_KEY) === "1") {
-      try{
-        await tryPlay();
-      }catch(e){
-        // ha mégis blokkolja, felajánljuk a Start-ot
-        showOverlay();
-      }
-    } else {
-      // első alkalom: ha szeretnéd, itt is feljöhet az overlay
-      // de most csak akkor jön fel, ha a user megnyomja a play-t és blokkolja
-    }
-  });
-
-  // === MÁSOLÁS ===
-  async function copyText(id){
-    const el = document.getElementById(id);
-    const txt = (el.innerText || "").trim();
-    if (!txt) return;
-    try{
-      await navigator.clipboard.writeText(txt);
-      statusEl.textContent = "Másolva ✅";
-      setTimeout(()=> statusEl.textContent="Kész.", 900);
-    }catch(e){
-      statusEl.textContent = "Másolás nem engedélyezett itt.";
-    }
-  }
+  d.appendChild(img);
+  gallery.appendChild(d);
+});
 </script>
+
 </body>
 </html>
