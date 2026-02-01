@@ -1,216 +1,314 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Barbi ❤️</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Barbi ❤️</title>
 
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#000000">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#000000">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
 
-<style>
-:root{
-  --gold:#f2cf7a;
-}
+  <style>
+    :root{
+      --bg1:#05060a;
+      --bg2:#0b0b10;
+      --card: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.14);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.66);
+      --gold: #f2cf7a;
+      --gold2:#d7b15e;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --r: 22px;
+    }
 
-/* ===== ALAP ===== */
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,Arial;
-  background: radial-gradient(circle at top, #3a0000, #000);
-  color:#fff;
-  min-height:100vh;
-}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      color: var(--text);
+      background:
+        radial-gradient(900px 600px at 20% 10%, rgba(242,207,122,.16), transparent 55%),
+        radial-gradient(700px 500px at 85% 25%, rgba(154,110,255,.14), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
 
-/* ===== LOCK SCREEN ===== */
-#lockScreen{
-  position:fixed;
-  inset:0;
-  background: radial-gradient(circle at top, #550000, #000);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-}
+    /* === LOCK SCREEN === */
+    .lock-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.78);
+      backdrop-filter: blur(14px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:30000;
+    }
+    .lock-card{
+      width:100%;
+      max-width:380px;
+      padding:26px 22px 24px;
+      border-radius:26px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow:0 30px 90px rgba(0,0,0,.6);
+      text-align:center;
+    }
+    .lock-heart{
+      font-size:64px;
+      margin-bottom:6px;
+      position:relative;
+      display:inline-block;
+    }
+    .lock-heart span{
+      position:absolute;
+      right:-6px;
+      bottom:-6px;
+      font-size:26px;
+    }
+    .lock-card h2{
+      margin:6px 0 6px;
+      font-size:20px;
+      letter-spacing:.3px;
+    }
+    .lock-card p{
+      margin:0 0 16px;
+      font-size:13px;
+      color: var(--muted);
+    }
+    .lock-input{
+      width:100%;
+      text-align:center;
+      font-size:24px;
+      letter-spacing:10px;
+      padding:14px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.35);
+      color:#fff;
+      outline:none;
+    }
+    .lock-error{
+      margin-top:12px;
+      font-size:13px;
+      color:#ff8a8a;
+      display:none;
+    }
 
-.lock-box{
-  text-align:center;
-}
+    /* === APP TARTALOM (EREDTI DIZÁJNOD) === */
+    .wrap{
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 28px 18px 60px;
+    }
 
-.heart{
-  width:160px;
-  height:160px;
-  background:#ff1f3d;
-  position:relative;
-  transform:rotate(-45deg);
-  margin:0 auto 40px;
-  box-shadow:0 0 45px rgba(255,0,60,.9);
-}
-.heart:before,
-.heart:after{
-  content:"";
-  width:160px;
-  height:160px;
-  background:#ff1f3d;
-  border-radius:50%;
-  position:absolute;
-}
-.heart:before{top:-80px;left:0}
-.heart:after{left:80px;top:0}
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom: 16px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      background: linear-gradient(135deg, var(--gold), #ff6bd6);
+    }
+    .chip{ font-size:12px; color:var(--muted); }
 
-/* lakat */
-.lock{
-  position:absolute;
-  width:48px;
-  height:40px;
-  background:#111;
-  border-radius:6px;
-  bottom:28px;
-  left:50%;
-  transform:translateX(-50%);
-}
-.lock:before{
-  content:"";
-  position:absolute;
-  width:28px;
-  height:22px;
-  border:4px solid #111;
-  border-bottom:none;
-  border-radius:20px 20px 0 0;
-  top:-22px;
-  left:6px;
-}
+    .hero{
+      padding: 26px 22px;
+      border-radius: var(--r);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: var(--shadow);
+    }
 
-#code{
-  width:160px;
-  padding:12px;
-  font-size:18px;
-  text-align:center;
-  border-radius:12px;
-  border:none;
-  outline:none;
-}
+    .grid{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+    @media(min-width:720px){
+      .grid{grid-template-columns:1fr 1fr}
+      .span2{grid-column:span 2}
+    }
 
-.lock-box button{
-  margin-top:16px;
-  padding:12px 28px;
-  font-size:16px;
-  border-radius:14px;
-  border:none;
-  cursor:pointer;
-  background:linear-gradient(135deg,#ff6a6a,#ff1f3d);
-  font-weight:700;
-}
+    .card{
+      border-radius:var(--r);
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.1);
+      padding:18px;
+    }
 
-#error{
-  margin-top:12px;
-  color:#ff9b9b;
-  display:none;
-}
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+    }
+    .ph{aspect-ratio:1/1;border-radius:16px;overflow:hidden}
+    .ph img{width:100%;height:100%;object-fit:cover;cursor:zoom-in}
 
-/* ===== APP ===== */
-#app{
-  display:none;
-  padding:26px 18px 60px;
-  max-width:820px;
-  margin:0 auto;
-}
+    .footer{
+      margin-top:18px;
+      text-align:center;
+      font-size:12px;
+      color:rgba(255,255,255,.5);
+    }
 
-h1{margin-top:0}
-
-.card{
-  margin-top:18px;
-  padding:18px;
-  border-radius:22px;
-  background:rgba(255,255,255,.08);
-}
-
-button.main{
-  width:100%;
-  margin-top:12px;
-  padding:12px;
-  border-radius:14px;
-  border:none;
-  font-weight:700;
-  background:linear-gradient(135deg,var(--gold),#d7b15e);
-}
-.output{
-  margin-top:12px;
-  padding:12px;
-  border-radius:14px;
-  background:rgba(0,0,0,.35);
-}
-</style>
+    /* === FULLSCREEN VIEWER === */
+    .photo-viewer{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.9);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:10000;
+    }
+    .photo-viewer img{
+      max-width:95vw;
+      max-height:95vh;
+      border-radius:18px;
+    }
+    .pv-btn{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      width:46px;height:46px;
+      border-radius:50%;
+      background:rgba(0,0,0,.4);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+      cursor:pointer;
+    }
+    .pv-btn.left{left:14px}
+    .pv-btn.right{right:14px}
+  </style>
 </head>
 
 <body>
 
-<!-- LOCK -->
-<div id="lockScreen">
-  <div class="lock-box">
-    <div class="heart">
-      <div class="lock"></div>
-    </div>
-
-    <input id="code" type="password" placeholder="••••">
-    <br>
-    <button onclick="unlock()">Belépés</button>
-    <div id="error">Hibás kód</div>
+<!-- 🔒 LOCK SCREEN -->
+<div class="lock-overlay" id="lockOverlay">
+  <div class="lock-card">
+    <div class="lock-heart">❤️<span>🔒</span></div>
+    <h2>Kulcs</h2>
+    <p>Egy dátum, ami csak nekünk fontos</p>
+    <input id="lockInput" class="lock-input" maxlength="4" inputmode="numeric" placeholder="••••">
+    <div class="lock-error" id="lockError">Nem ez az 💔</div>
   </div>
 </div>
 
 <!-- APP -->
-<div id="app">
-  <h1>Barbi ❤️</h1>
-  <p>Ez a privát app csak Neked készült.</p>
-
-  <div class="card">
-    <h3>💖 Okok</h3>
-    <button class="main" onclick="showReason()">Adj egy okot</button>
-    <div class="output" id="reasonOut">–</div>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span><b>Barbi</b> ❤️</div>
+    <div class="chip" id="todayChip"></div>
   </div>
 
-  <div class="card">
-    <h3>🎵 Zene</h3>
-    <button class="main" onclick="toggleMusic()">Lejátszás / Szünet</button>
-    <audio id="player" src="music.mp3" loop></audio>
+  <div class="hero">
+    <h1>Barbi ❤️</h1>
+    <p>Képek • zene • üzenetek</p>
   </div>
+
+  <div class="grid">
+    <div class="card span2">
+      <h3>📸 Képek</h3>
+      <div class="gallery" id="gallery"></div>
+    </div>
+  </div>
+
+  <div class="footer">Kész.</div>
+</div>
+
+<!-- FULLSCREEN -->
+<div class="photo-viewer" id="photoViewer" onclick="closePhoto()">
+  <img id="photoViewerImg">
+  <div class="pv-btn left" onclick="event.stopPropagation();prevPhoto()">‹</div>
+  <div class="pv-btn right" onclick="event.stopPropagation();nextPhoto()">›</div>
 </div>
 
 <script>
-/* === LOCK === */
-function unlock(){
-  const v=document.getElementById("code").value;
-  if(v==="1021"){
-    document.getElementById("lockScreen").style.display="none";
-    document.getElementById("app").style.display="block";
-  }else{
-    document.getElementById("error").style.display="block";
+  // DATE
+  document.getElementById("todayChip").textContent =
+    new Intl.DateTimeFormat("hu-HU",{dateStyle:"medium"}).format(new Date());
+
+  // 🔑 LOCK
+  const LOCK_KEY="barbi_lock_ok";
+  const CODE="1021";
+  const overlay=document.getElementById("lockOverlay");
+  const input=document.getElementById("lockInput");
+  const err=document.getElementById("lockError");
+
+  if(localStorage.getItem(LOCK_KEY)==="1"){
+    overlay.style.display="none";
   }
-}
 
-/* === OKOK === */
-const reasons=[
-  "Mert Te vagy az otthonom.",
-  "Mert hiányzol akkor is, ha itt vagy.",
-  "Mert szeretem a mosolyod.",
-  "Mert fontos vagy nekem.",
-  "Mert hiszek bennünk."
-];
-function showReason(){
-  document.getElementById("reasonOut").innerText =
-    reasons[Math.floor(Math.random()*reasons.length)];
-}
+  input.addEventListener("input",()=>{
+    if(input.value.length<4) return;
+    if(input.value===CODE){
+      localStorage.setItem(LOCK_KEY,"1");
+      overlay.style.display="none";
+    }else{
+      err.style.display="block";
+      input.value="";
+      setTimeout(()=>err.style.display="none",1200);
+    }
+  });
 
-/* === ZENE === */
-let playing=false;
-function toggleMusic(){
-  const p=document.getElementById("player");
-  if(!playing){p.play();playing=true;}
-  else{p.pause();playing=false;}
-}
+  // GALLERY
+  const photos=[
+    "photos/1.jpg","photos/2.jpg","photos/3.jpg"
+  ];
+  const g=document.getElementById("gallery");
+  photos.forEach((src,i)=>{
+    const d=document.createElement("div");
+    d.className="ph";
+    const img=document.createElement("img");
+    img.src=src;
+    img.onclick=()=>openPhoto(i);
+    d.appendChild(img);
+    g.appendChild(d);
+  });
+
+  // VIEWER
+  let idx=0;
+  function openPhoto(i){idx=i;show()}
+  function show(){
+    photoViewerImg.src=photos[idx];
+    photoViewer.style.display="flex";
+  }
+  function closePhoto(){photoViewer.style.display="none"}
+  function nextPhoto(){idx=(idx+1)%photos.length;show()}
+  function prevPhoto(){idx=(idx-1+photos.length)%photos.length;show()}
+
+  // SWIPE
+  let sx=0;
+  photoViewer.addEventListener("touchstart",e=>sx=e.touches[0].clientX);
+  photoViewer.addEventListener("touchend",e=>{
+    let dx=e.changedTouches[0].clientX-sx;
+    if(Math.abs(dx)>40) dx<0?nextPhoto():prevPhoto();
+  });
+
+  // KEYS
+  window.addEventListener("keydown",e=>{
+    if(photoViewer.style.display!=="flex")return;
+    if(e.key==="Escape")closePhoto();
+    if(e.key==="ArrowRight")nextPhoto();
+    if(e.key==="ArrowLeft")prevPhoto();
+  });
 </script>
 
 </body>
