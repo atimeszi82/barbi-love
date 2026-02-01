@@ -674,7 +674,7 @@
       }
     }catch(e){
       musicOut.textContent = "A böngésző blokkolta az automatikus lejátszást. Koppints a Start gombra.";
-      showOverlay();
+      // x showOverlay(); // kártya OFF
     }
   }
 
@@ -691,7 +691,7 @@
   window.addEventListener('load', async () => {
     if (localStorage.getItem(AUTO_KEY) === "1") {
       try{ await tryPlay(); }
-      catch(e){ showOverlay(); }
+      catch(e){ /* no overlay */ }
     }
   });
 
@@ -823,16 +823,25 @@
     return v === "1021" || v === "2110";
   }
 
-  function unlock(){
-    lockOverlay.style.display = "none";
-    lockOverlay.setAttribute("aria-hidden", "true");
+  async function unlock(){
+  lockOverlay.style.display = "none";
+  lockOverlay.setAttribute("aria-hidden", "true");
+
+  // ✅ zene indítása belépéskor (user gesture)
+  try{
+    await tryPlay();
+    // ha később is akarod, hogy próbálja induláskor:
+    localStorage.setItem(AUTO_KEY, "1");
+  }catch(e){
+    // ha a böngésző mégis blokkolná: marad csendben, nincs kártya
   }
+}
 
   function checkUnlock(){
     const v = (lockCode.value || "").trim();
     if (isValidCode(v)){
       lockError.textContent = "";
-      unlock();
+      unlock(); // async, de itt nem kell await
       return;
     }
     lockError.textContent = "Hibás kód. Próbáld újra.";
