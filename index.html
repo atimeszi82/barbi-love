@@ -551,7 +551,9 @@
       <div class="pv-btn right" onclick="event.stopPropagation(); nextPhoto()">›</div>
     </div>
   </div>
-
+  
+ <audio id="player" preload="none"></audio>
+  
 <script>
   // === DÁTUM + CHIP ===
   const chip = document.getElementById('todayChip');
@@ -850,6 +852,6 @@
     lockError.textContent = "";
   });
 </script>
-<audio id="player" preload="none"></audio>
+
 </body>
 </html>
