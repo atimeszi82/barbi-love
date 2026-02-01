@@ -371,6 +371,73 @@
     @media (max-width: 520px){
       .pv-btn{ width: 42px; height: 42px; }
     }
+    /* === LOCK SCREEN (BELÉPŐ) === */
+.lock-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.72), rgba(0,0,0,.82)),
+    url("lock.jpg") center/cover no-repeat;
+}
+
+.lock-card{
+  max-width: 520px;
+  width: 100%;
+  border-radius: 22px;
+  padding: 18px 18px 16px;
+  background: rgba(0,0,0,.40);
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 20px 70px rgba(0,0,0,.65);
+  backdrop-filter: blur(14px);
+  text-align: center;
+}
+
+.lock-title{
+  margin: 6px 0 10px;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+
+.lock-sub{
+  margin: 0 0 14px;
+  opacity: .80;
+  line-height: 1.4;
+  color: rgba(255,255,255,.86);
+}
+
+.lock-input{
+  width: 100%;
+  padding: 14px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.22);
+  background: rgba(0,0,0,.35);
+  color: rgba(255,255,255,.92);
+  outline: none;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: .25px;
+  text-align: center;
+}
+
+.lock-hint{
+  margin-top: 10px;
+  font-size: 12px;
+  opacity: .75;
+}
+
+.lock-error{
+  margin-top: 10px;
+  font-size: 13px;
+  color: rgba(255,170,170,.95);
+  min-height: 18px;
+}
+
   </style>
 </head>
 
@@ -720,7 +787,76 @@
   });
 
   renderGallery();
+    // === LOCK SCREEN LOGIKA ===
+  const LOCK_KEY = "barbi_unlocked_v1";
+  const lockOverlay = document.getElementById("lockOverlay");
+  const lockCode = document.getElementById("lockCode");
+  const lockBtn = document.getElementById("lockBtn");
+  const lockError = document.getElementById("lockError");
+
+  function isValidCode(v){
+    return v === "1021" || v === "2110";
+  }
+
+  function unlock(){
+    localStorage.setItem(LOCK_KEY, "1");
+    lockOverlay.style.display = "none";
+    lockOverlay.setAttribute("aria-hidden", "true");
+  }
+
+  function checkUnlock(){
+    const v = (lockCode.value || "").trim();
+    if (isValidCode(v)){
+      lockError.textContent = "";
+      unlock();
+      return;
+    }
+    lockError.textContent = "Hibás kód. Próbáld újra.";
+    lockCode.focus();
+    lockCode.select();
+  }
+
+  // Ha már egyszer feloldotta ezen az eszközön
+  window.addEventListener("load", () => {
+    if (localStorage.getItem(LOCK_KEY) === "1"){
+      lockOverlay.style.display = "none";
+      lockOverlay.setAttribute("aria-hidden", "true");
+    } else {
+      // első alkalom: fókusz
+      setTimeout(() => lockCode.focus(), 120);
+    }
+  });
+
+  lockBtn.addEventListener("click", checkUnlock);
+
+  lockCode.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") checkUnlock();
+  });
+
 </script>
+<!-- === LOCK SCREEN OVERLAY === -->
+<div class="lock-overlay" id="lockOverlay" aria-hidden="false">
+  <div class="lock-card">
+    <div style="font-size:28px;">🔒❤️</div>
+    <div class="lock-title">Barbi ❤️ – Belépés</div>
+    <p class="lock-sub">Írd be a kódot a folytatáshoz.</p>
+
+    <input
+      class="lock-input"
+      id="lockCode"
+      type="password"
+      inputmode="numeric"
+      autocomplete="one-time-code"
+      placeholder="****"
+      maxlength="4"
+    />
+
+    <button class="start-btn" id="lockBtn" style="margin-top:12px;">Belépés</button>
+
+    <div class="lock-error" id="lockError"></div>
+    <div class="lock-hint">Tipp: 4 számjegy</div>
+  </div>
+</div>
 
 </body>
 </html>
