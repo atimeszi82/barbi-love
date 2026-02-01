@@ -507,20 +507,6 @@
         <div class="output" id="reasonOut">Nyomd meg az „Adj egy okot” gombot.</div>
       </div>
 
-      <div class="card">
-        <div class="title">
-          <h2>🎵 Zene</h2>
-          <div class="badge" id="musicState">OFF</div>
-        </div>
-        <p class="text">Androidon teljes autoplay nem garantált, ezért első alkalommal egy koppintás kell.</p>
-        <div class="btnrow">
-          <button class="btn" onclick="toggleMusic(true)" id="musicBtn">▶ Lejátszás</button>
-          <button class="btn secondary" onclick="setVolume(.25)">Halk</button>
-        </div>
-        <div class="output" id="musicOut">Zene: <b>music.mp3</b></div>
-        <audio id="player" preload="none"></audio>
-      </div>
-
       <div class="card span2">
         <div class="title">
           <h2>📸 Képek</h2>
@@ -864,6 +850,6 @@
     lockError.textContent = "";
   });
 </script>
-
+<audio id="player" preload="none"></audio>
 </body>
 </html>
