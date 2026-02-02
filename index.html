@@ -339,6 +339,9 @@
       cursor:pointer;
     }
 
+    /* ✅ biztosan a lock fölött legyen */
+    #earlyViewer{ z-index: 30000; }
+
     /* === FULLSCREEN NAV (SWIPE + ARROWS) === */
     .pv-nav{
       position: fixed;
@@ -565,7 +568,7 @@
     </div>
   </div>
 
-  <!-- ✅ VALENTIN ELŐTTI BLOKK: ugyanaz a fullscreen viewer, de külön ID -->
+  <!-- ✅ VALENTIN ELŐTTI BLOKK -->
   <div class="photo-viewer" id="earlyViewer" onclick="closeEarly()">
     <img id="earlyImg" src="Kép12.jpg" alt="">
   </div>
@@ -579,7 +582,7 @@
   const hu = new Intl.DateTimeFormat('hu-HU', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
   chip.textContent = hu.format(now);
 
-  // === NAPI ÜZENETEK (IDE MAJD TE ÍROD BE) ===
+  // === NAPI ÜZENETEK ===
   const startDate = new Date("2026-02-14T00:00:00");
   const dailyMessages = [
     "SZERETLEK!",
@@ -614,7 +617,7 @@
     out.textContent = dailyMessages[idx];
   }
 
-  // === OKOK (IDE IS TE ÍRSZ) ===
+  // === OKOK ===
   const reasons = [
     "Mert mindig tudod holvan amit keresek!",
     "Csak mert!",
@@ -668,9 +671,6 @@
     musicState.textContent = on ? "ON" : "OFF";
   }
 
-  function showOverlay(){ overlay.style.display = "flex"; }
-  function hideOverlay(){ overlay.style.display = "none"; }
-
   async function tryPlay(){
     ensureMusic();
     await player.play();
@@ -689,8 +689,7 @@
         setUI(false);
       }
     }catch(e){
-      musicOut.textContent = "A böngésző blokkolta az automatikus lejátszást. Koppints a Start gombra.";
-      // showOverlay();
+      musicOut.textContent = "A böngésző blokkolta az automatikus lejátszást.";
     }
   }
 
@@ -699,19 +698,18 @@
       await tryPlay();
       localStorage.setItem(AUTO_KEY, "1");
     }catch(e){}
-    hideOverlay();
+    overlay.style.display = "none";
   });
 
-  startSkip.addEventListener('click', () => hideOverlay());
+  startSkip.addEventListener('click', () => overlay.style.display = "none");
 
   window.addEventListener('load', async () => {
     if (localStorage.getItem(AUTO_KEY) === "1") {
-      try{ await tryPlay(); }
-      catch(e){ /* no overlay */ }
+      try{ await tryPlay(); } catch(e){}
     }
   });
 
-  // ✅ === GALÉRIA – FOTÓLISTA ===
+  // === GALÉRIA ===
   const photos = [
     "photos/0.jpg","photos/1.jpg","photos/2.jpg","photos/Boss.jpg","photos/3.jpg","photos/4.jpg","photos/Meszi.jpg",
     "photos/5.jpg","photos/6.jpg","photos/7.jpg","photos/8.jpg","photos/Meszi2.jpg",
@@ -746,7 +744,6 @@
     });
   }
 
-  // === FULLSCREEN (SWIPE + ARROWS) ===
   let currentIndex = 0;
 
   function indexOfPhoto(src){
@@ -776,10 +773,8 @@
   function nextPhoto(){ showPhotoByIndex(currentIndex + 1); }
   function prevPhoto(){ showPhotoByIndex(currentIndex - 1); }
 
-  // ne záródjon be, ha magára a képre kattintasz
   document.getElementById("photoViewerImg").addEventListener("click", (e)=>e.stopPropagation());
 
-  // SWIPE
   const viewer = document.getElementById("photoViewer");
   let sx = 0, sy = 0, st = 0;
 
@@ -805,7 +800,6 @@
     else prevPhoto();
   }, {passive:true});
 
-  // Billentyűk (PC)
   window.addEventListener("keydown", (e)=>{
     const open = (viewer.style.display === "flex");
     if(e.key === "Escape") closePhoto();
@@ -816,19 +810,25 @@
 
   renderGallery();
 
-  // ✅ === VALENTIN ELŐTTI KÉP ===
+  // ✅ VALENTIN ELŐTTI KÉP
   const earlyViewer = document.getElementById("earlyViewer");
   const earlyImg = document.getElementById("earlyImg");
   earlyImg.addEventListener("click", (e)=>e.stopPropagation());
 
   function openEarly(){
+    // lock elrejtése, hogy biztosan ne látszódjon
+    lockOverlay.style.display = "none";
     earlyViewer.style.display = "flex";
   }
+
   function closeEarly(){
     earlyViewer.style.display = "none";
+    // vissza a lock
+    lockOverlay.style.display = "flex";
+    setTimeout(() => lockCode.focus(), 80);
   }
 
-  // === LOCK SCREEN (MINDIG KÉR KÓDOT) ===
+  // === LOCK ===
   const lockOverlay = document.getElementById("lockOverlay");
   const lockCode = document.getElementById("lockCode");
   const lockBtn = document.getElementById("lockBtn");
@@ -841,8 +841,6 @@
   async function unlock(){
     lockOverlay.style.display = "none";
     lockOverlay.setAttribute("aria-hidden", "true");
-
-    // ✅ zene indítása belépéskor (user gesture)
     try{
       await tryPlay();
       localStorage.setItem(AUTO_KEY, "1");
@@ -855,16 +853,15 @@
     if (isValidCode(v)){
       lockError.textContent = "";
 
-      // ✅ Valentin előtt: KÉP + nincs belépés
+      // ✅ Valentin előtt: kép + nincs belépés
       if (dayIndex() < 0){
         openEarly();
         lockCode.value = "";
-        lockCode.focus();
         return;
       }
 
       // ✅ Valentin napjától: belépés
-      unlock(); // async, de itt nem kell await
+      unlock();
       return;
     }
 
@@ -873,7 +870,6 @@
     lockCode.select();
   }
 
-  // mindig kérje
   window.addEventListener("load", () => {
     lockOverlay.style.display = "flex";
     lockOverlay.setAttribute("aria-hidden", "false");
