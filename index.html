@@ -463,7 +463,6 @@
       <button class="start-btn" id="lockBtn" style="margin-top:12px;">Belépés</button>
 
       <div class="lock-error" id="lockError"></div>
-      
     </div>
   </div>
 
@@ -507,12 +506,26 @@
         <div class="output" id="reasonOut">Nyomd meg az „Adj egy okot” gombot.</div>
       </div>
 
+      <!-- ✅ ZENE KÁRTYA (hogy a meglévő JS-nek legyenek elemei) -->
+      <div class="card">
+        <div class="title">
+          <h2>🎵 Zene</h2>
+          <div class="badge" id="musicState">OFF</div>
+        </div>
+        <p class="text">Belépéskor automatikusan próbál indulni. Itt kézzel is tudod kapcsolni.</p>
+        <div class="btnrow">
+          <button class="btn" id="musicBtn" onclick="toggleMusic(true)">▶ Lejátszás</button>
+          <button class="btn secondary" onclick="setVolume(0.10)">10%</button>
+          <button class="btn secondary" onclick="setVolume(0.25)">25%</button>
+        </div>
+        <div class="output" id="musicOut">Zene: —</div>
+      </div>
+
       <div class="card span2">
         <div class="title">
           <h2>📸 Képek</h2>
           <div class="badge">Galéria</div>
         </div>
-        
 
         <div class="gallery" id="gallery">
           <div class="ph"><span>photos/1.jpg</span></div>
@@ -551,9 +564,14 @@
       <div class="pv-btn right" onclick="event.stopPropagation(); nextPhoto()">›</div>
     </div>
   </div>
-  
- <audio id="player" preload="none"></audio>
-  
+
+  <!-- ✅ VALENTIN ELŐTTI BLOKK: ugyanaz a fullscreen viewer, de külön ID -->
+  <div class="photo-viewer" id="earlyViewer" onclick="closeEarly()">
+    <img id="earlyImg" src="Kép12.jpg" alt="">
+  </div>
+
+  <audio id="player" preload="none"></audio>
+
 <script>
   // === DÁTUM + CHIP ===
   const chip = document.getElementById('todayChip');
@@ -566,8 +584,19 @@
   const dailyMessages = [
     "SZERETLEK!",
     "Olyan vagyok, mint egy öreg ház,ha nem fűtesz hamar kihülök!",
-    "Hogy mondjam el mennyire szeretlek, ha nem fér ide!","Ma nem adtál csókot!","Már rád másznék!","02.19 …","02.20 …",
-    "02.21 …","02.22 …","02.23 …","02.24 …","02.25 …","02.26 …","02.27 …","02.28 …"
+    "Hogy mondjam el mennyire szeretlek, ha nem fér ide!",
+    "Ma nem adtál csókot!",
+    "Már rád másznék!",
+    "02.19 …",
+    "02.20 …",
+    "02.21 …",
+    "02.22 …",
+    "02.23 …",
+    "02.24 …",
+    "02.25 …",
+    "02.26 …",
+    "02.27 …",
+    "02.28 …"
   ];
 
   function dayIndex(){
@@ -661,7 +690,7 @@
       }
     }catch(e){
       musicOut.textContent = "A böngésző blokkolta az automatikus lejátszást. Koppints a Start gombra.";
-      // x showOverlay(); // kártya OFF
+      // showOverlay();
     }
   }
 
@@ -681,20 +710,6 @@
       catch(e){ /* no overlay */ }
     }
   });
-
-  // === MÁSOLÁS ===
-  async function copyText(id){
-    const el = document.getElementById(id);
-    const txt = (el.innerText || "").trim();
-    if (!txt) return;
-    try{
-      await navigator.clipboard.writeText(txt);
-      statusEl.textContent = "Másolva ✅";
-      setTimeout(()=> statusEl.textContent="Kész.", 900);
-    }catch(e){
-      statusEl.textContent = "Másolás nem engedélyezett itt.";
-    }
-  }
 
   // ✅ === GALÉRIA – FOTÓLISTA ===
   const photos = [
@@ -801,6 +816,18 @@
 
   renderGallery();
 
+  // ✅ === VALENTIN ELŐTTI KÉP ===
+  const earlyViewer = document.getElementById("earlyViewer");
+  const earlyImg = document.getElementById("earlyImg");
+  earlyImg.addEventListener("click", (e)=>e.stopPropagation());
+
+  function openEarly(){
+    earlyViewer.style.display = "flex";
+  }
+  function closeEarly(){
+    earlyViewer.style.display = "none";
+  }
+
   // === LOCK SCREEN (MINDIG KÉR KÓDOT) ===
   const lockOverlay = document.getElementById("lockOverlay");
   const lockCode = document.getElementById("lockCode");
@@ -812,26 +839,35 @@
   }
 
   async function unlock(){
-  lockOverlay.style.display = "none";
-  lockOverlay.setAttribute("aria-hidden", "true");
+    lockOverlay.style.display = "none";
+    lockOverlay.setAttribute("aria-hidden", "true");
 
-  // ✅ zene indítása belépéskor (user gesture)
-  try{
-    await tryPlay();
-    // ha később is akarod, hogy próbálja induláskor:
-    localStorage.setItem(AUTO_KEY, "1");
-  }catch(e){
-    // ha a böngésző mégis blokkolná: marad csendben, nincs kártya
+    // ✅ zene indítása belépéskor (user gesture)
+    try{
+      await tryPlay();
+      localStorage.setItem(AUTO_KEY, "1");
+    }catch(e){}
   }
-}
 
   function checkUnlock(){
     const v = (lockCode.value || "").trim();
+
     if (isValidCode(v)){
       lockError.textContent = "";
+
+      // ✅ Valentin előtt: KÉP + nincs belépés
+      if (dayIndex() < 0){
+        openEarly();
+        lockCode.value = "";
+        lockCode.focus();
+        return;
+      }
+
+      // ✅ Valentin napjától: belépés
       unlock(); // async, de itt nem kell await
       return;
     }
+
     lockError.textContent = "Hibás kód. Próbáld újra.";
     lockCode.focus();
     lockCode.select();
