@@ -834,9 +834,12 @@
   const lockBtn = document.getElementById("lockBtn");
   const lockError = document.getElementById("lockError");
 
-  function isValidCode(v){
-    return v === "1021" || v === "2110";
-  }
+  const ADMIN_CODE = "1999";
+
+function isValidCode(v){
+  return v === "1021" || v === "2110" || v === ADMIN_CODE;
+}
+
 
   async function unlock(){
     lockOverlay.style.display = "none";
@@ -852,6 +855,13 @@
 
     if (isValidCode(v)){
       lockError.textContent = "";
+
+      // ✅ ADMIN KÓD – mindig belép
+if (v === ADMIN_CODE){
+  unlock();
+  return;
+}
+
 
       // ✅ Valentin előtt: kép + nincs belépés
       if (dayIndex() < 0){
